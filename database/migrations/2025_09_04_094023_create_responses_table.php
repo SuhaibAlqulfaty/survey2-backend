@@ -13,6 +13,12 @@ return new class extends Migration
     {
         Schema::create('responses', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('survey_id')->constrained()->onDelete('cascade');
+            $table->foreignId('question_id')->constrained()->onDelete('cascade');
+            $table->foreignId('contact_id')->nullable()->constrained()->onDelete('set null');
+            $table->json('answer'); // Store the answer data
+            $table->string('ip_address')->nullable();
+            $table->text('user_agent')->nullable();
             $table->timestamps();
         });
     }

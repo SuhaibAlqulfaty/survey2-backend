@@ -5,22 +5,21 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Question extends Model
+class Response extends Model
 {
     use HasFactory;
 
     protected $fillable = [
         'survey_id',
-        'title',
-        'type',
-        'required',
-        'options',
-        'order'
+        'question_id',
+        'contact_id',
+        'answer',
+        'ip_address',
+        'user_agent'
     ];
 
     protected $casts = [
-        'required' => 'boolean',
-        'options' => 'array'
+        'answer' => 'array'
     ];
 
     public function survey()
@@ -28,8 +27,13 @@ class Question extends Model
         return $this->belongsTo(Survey::class);
     }
 
-    public function responses()
+    public function question()
     {
-        return $this->hasMany(Response::class);
+        return $this->belongsTo(Question::class);
+    }
+
+    public function contact()
+    {
+        return $this->belongsTo(Contact::class);
     }
 }
