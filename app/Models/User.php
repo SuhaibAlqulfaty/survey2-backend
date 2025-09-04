@@ -21,6 +21,14 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'organization_id',
+        'role',
+        'permissions',
+        'avatar',
+        'phone',
+        'timezone',
+        'last_login_at',
+        'is_active'
     ];
 
     /**
@@ -41,5 +49,23 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
+        'permissions' => 'array',
+        'last_login_at' => 'datetime',
+        'is_active' => 'boolean'
     ];
+
+    public function organization()
+    {
+        return $this->belongsTo(Organization::class);
+    }
+
+    public function surveys()
+    {
+        return $this->hasMany(Survey::class);
+    }
+
+    public function campaigns()
+    {
+        return $this->hasMany(Campaign::class);
+    }
 }
