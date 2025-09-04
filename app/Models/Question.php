@@ -15,12 +15,14 @@ class Question extends Model
         'type',
         'required',
         'options',
-        'order'
+        'order',
+        'settings'
     ];
 
     protected $casts = [
         'required' => 'boolean',
-        'options' => 'array'
+        'options' => 'array',
+        'settings' => 'array'
     ];
 
     public function survey()
