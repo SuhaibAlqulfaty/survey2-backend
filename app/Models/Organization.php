@@ -11,7 +11,6 @@ class Organization extends Model
 
     protected $fillable = [
         'name',
-        'slug',
         'description',
         'logo',
         'website',
@@ -38,16 +37,22 @@ class Organization extends Model
         parent::boot();
         
         static::creating(function ($organization) {
-            if (empty($organization->slug)) {
-                $organization->slug = \Illuminate\Support\Str::slug($organization->name);
-                
-                // Ensure uniqueness
-                $originalSlug = $organization->slug;
-                $counter = 1;
-                while (static::where('slug', $organization->slug)->exists()) {
-                    $organization->slug = $originalSlug . '-' . $counter;
-                    $counter++;
+            // Only set slug if the column exists in the database
+            try {
+                if (empty($organization->slug) && \Schema::hasColumn('organizations', 'slug')) {
+                    $organization->slug = \Illuminate\Support\Str::slug($organization->name);
+                    
+                    // Ensure uniqueness
+                    $originalSlug = $organization->slug;
+                    $counter = 1;
+                    while (static::where('slug', $organization->slug)->exists()) {
+                        $organization->slug = $originalSlug . '-' . $counter;
+                        $counter++;
+                    }
                 }
+            } catch (\Exception $e) {
+                // If slug column doesn't exist, continue without setting it
+                \Log::info('Slug column not found in organizations table, skipping slug generation');
             }
         });
     }
